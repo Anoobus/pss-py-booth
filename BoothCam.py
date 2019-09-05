@@ -24,7 +24,7 @@ class BoothCam:
     def __init__(self):
         self.camera = PiCamera()
         #self.camera.resolution = (1640, 922)
-        self.camera.resolution = (1515, 852)
+        self.camera.resolution = (2592, 1944)
         self.camera.framerate = 24
         self.previewOn = False
         print('setting up mainCanvas')
@@ -38,6 +38,8 @@ class BoothCam:
         self.thumbNailSection.layer = 0
 
     def __getPaddedImage(self, imagePath):
+        # // = Floor division - division that results into whole number
+        #      adjusted to the left in the number line
         img = Image.open(imagePath)
         pad = Image.new('RGB', (
             ((img.size[0] + 31) // 32) * 32,
@@ -73,7 +75,7 @@ class BoothCam:
         self.countdownSection.update(pad.tobytes())
 
     def takePic(self, imgName, picNum):
-        #self.camera.resolution = (1640,922)
+        #self.camera.resolution = (2592,1944)
         self.camera.capture(imgName)
         #self.camera.resolution = (1515, 852)
         #os.system('mpg123 -q /home/pi/Projects/content/Click.mp3')
@@ -81,13 +83,16 @@ class BoothCam:
         self.showThumb(imgName,picNum)
 
     def showThumb(self, location,picNum):
-        size = 256,144
+        size = (
+            ((256 + 31) // 32) * 32,
+            ((341 + 15) // 16) * 16,
+            )
         thumb = Image.open(location)
-        saveLoc = 'content/thumb/new/thumb_' + str(picNum) + '.jpg'
-        os.remove(saveLoc)
+        #saveLoc = 'content/thumb/new/thumb_' + str(picNum) + '.jpg'
+        #os.remove(saveLoc)
         thumb.thumbnail(size,Image.ANTIALIAS)
-        thumb.save(saveLoc,"JPEG")
-        self.thumbNailSection.update(self.__getPaddedImage(saveLoc).tobytes())
+        #thumb.save(saveLoc,"JPEG")
+        self.thumbNailSection.update(thumb.tobytes())
         self.thumbNailSection.layer = 3
 
     def hideThumb(self):
@@ -98,7 +103,7 @@ class BoothCam:
 
     def showPreview(self):
         self.camera.start_preview(fullscreen=False,
-            window=(405,218,1515,852 ))
+            window=(405,218,(800 + 31) // 32 * 32,(1066 + 15) // 16 * 16 ))
 
     def shutdown(self):
         self.camera.close()
