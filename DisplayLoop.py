@@ -5,29 +5,38 @@ import time
 
 
 class DisplayLoop:
-    def __init__(self):
-        self.BoothCam = BoothCam.BoothCam()
+#    def __init__(self):
+#        self.BoothCam
 
     def runSequence(self):
-        try:
-            self.BoothCam.rendermainCanvas("sequence")
-            self.BoothCam.showPreview()
+        with BoothCam.UsingBoothCam() as cam:
+            print('set canvas to sequence')
+            cam.rendermainCanvas("sequence")
+            print('show preview')
+            cam.showPreview()
             sequencePrefix = datetime.datetime.now().strftime("%H.%M.%S.")
             for counter in range(0,3):
-                self.runCountDown()
+                print('run countdown')
+                self.runCountDown(cam)
                 num = str(counter).zfill(3)
                 picLocation = "pics/" + sequencePrefix + num + '_pic.jpg'
-                self.BoothCam.takePic(picLocation,counter)
-            self.BoothCam.hidePreview()
+                print('take pic')
+                cam.takePic(picLocation,counter)
+            print('turn off preview')
+            cam.hidePreview()
             time.sleep(2)
-            self.BoothCam.rendermainCanvas("website")
-        finally:
-            self.BoothCam.shutdown()
+            print('render website canvas')
+            cam.rendermainCanvas("website")
+            print('wait 2')
+            time.sleep(2)
 
-    def runCountDown(self):
+
+    def runCountDown(self, cam):
         maxNumber = 4
         for frame in range(0,maxNumber):
-            self.BoothCam.renderCountdown(frame)
+            print('render countdown frame %s',frame)
+            cam.renderCountdown(frame)
             time.sleep(1)
-        self.BoothCam.renderCountdown(maxNumber)
+        print('render countdown frame %s',maxNumber)
+        cam.renderCountdown(maxNumber)
 
