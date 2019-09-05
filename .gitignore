@@ -1,7 +1,7 @@
 # exclude everything
 pics/*
 content/thumb/new/*
-
+*.pyc
 
 # exception to the rule
 !pics/.gitkeep 
