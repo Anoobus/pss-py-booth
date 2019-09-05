@@ -2,6 +2,7 @@
 pics/*
 content/thumb/new/*
 
+
 # exception to the rule
 !pics/.gitkeep 
 !content/thumb/new/thumb_0.jpg
